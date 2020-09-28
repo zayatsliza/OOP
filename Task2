@@ -1,0 +1,63 @@
+using System;
+
+namespace task2
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Student studentF = new Student { Name = "Oleksa" };
+            GoodStudent studentS = new GoodStudent { Name = "Lena" };
+            BadStudent studentT = new BadStudent { Name = "Maks" };
+            Group NP = new Group(studentF, studentS, studentT);
+            Console.ReadKey();
+        }
+    }
+}
+class Group
+{
+    private Student studentF, studentS, studentT;
+    public Group(Student studentF, Student studentS, Student studentT)
+    {
+        Console.WriteLine(studentF.Name);
+        studentF.Study();
+        studentF.Read();
+        studentF.Write();
+        studentF.Relax();
+        Console.WriteLine("\n");
+        Console.WriteLine(studentS.Name);
+        studentS.Study();
+        studentS.Read();
+        studentS.Write();
+        studentS.Relax();
+        Console.WriteLine("\n");
+        Console.WriteLine(studentT.Name);
+        studentT.Study();
+        studentT.Read();
+        studentT.Write();
+        studentT.Relax();
+    }
+}
+class Student
+{
+    public string Name;
+    public virtual void Study() { Console.WriteLine("I study normally"); }
+    public virtual void Read() { Console.WriteLine("I can read normally"); }
+    public virtual void Write() { Console.WriteLine("I can write normally"); }
+    public virtual void Relax() { Console.WriteLine("I usually relaxe enough"); }
+}
+class GoodStudent : Student
+{
+    override public void Study() { Console.WriteLine("I’m best in my group"); }
+    override public void Read() { Console.WriteLine("I can read amazingly"); }
+    override public void Write() { Console.WriteLine("I can write perfectly"); }
+    override public void Relax() { Console.WriteLine("I usually relaxe in not the best way"); }
+}
+class BadStudent : Student
+{
+    override public void Study() { Console.WriteLine("I’m the worst student in my group"); }
+    override public void Read() { Console.WriteLine("I can’t read"); }
+    override public void Write() { Console.WriteLine("I can’t write"); }
+    override public void Relax() { Console.WriteLine("I usually relaxe in the best way"); }
+
+}
