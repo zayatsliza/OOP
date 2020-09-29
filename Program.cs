@@ -1,74 +1,202 @@
 ﻿using System;
+using System.Collections.Generic;
 
-namespace task3
+namespace sol2
 {
-    class Program
-    {
-        static void Main(string[] args)
+    abstract class Student
         {
-            double usd = 28.40;
-            double eur = 33.11;
-            Converter convert = new Converter(usd, eur);
-            if (usd > 0 && eur > 0)
+            protected string name;
+            protected string state;
+            public Student()
+            { }
+            public Student(string s)
             {
-                Console.WriteLine("Your UAH: ");
-                double money = Convert.ToDouble(Console.ReadLine());
-                if (money < 0) { Console.WriteLine(" Error "); Console.ReadKey(); }
-                else
+                name = s;
+            }
+            public void Relax()
+            {
+                state += "Relax ";
+            }
+            public void Read()
+            {
+                state += "Read ";
+            }
+            public void Write()
+            {
+                state += "Write ";
+            }
+            public string GetName()
+            {
+                return name;
+            }
+            public string GetState()
+            {
+                return state;
+            }
+            public abstract void Study();
+        }
+
+        class Good_Student : Student
+        {
+            public Good_Student(string name)
+                        : base(name)
+            {
+                state = "good ";
+            }
+            public override void Study()
+            {
+                Read();
+                Write();
+                Read();
+                Write();
+                Relax();
+            }
+
+        }
+
+        class Bad_Student : Student
+        {
+            public Bad_Student(string name)
+                        : base(name)
+            {
+                state = "bad ";
+            }
+            public override void Study()
+            {
+                Relax();
+                Relax();
+                Relax();
+                Relax();
+                Relax();
+            }
+        }
+        class Group
+        {
+            private string GroupName;
+            public List<Student> students = new List<Student>();
+            public Group(string name)
+            {
+                GroupName = name;
+            }
+            public void AddStudent(Student s)
+            {
+                s.Study();
+                students.Add(s);
+
+            }
+            public void GetInfo()
+            {
+                Console.WriteLine(GroupName);
+                foreach (Student i in students)
+                    Console.WriteLine(i.GetName());
+            }
+            public void GetFullInfo()
+            {
+                Console.WriteLine(GroupName);
+                foreach (Student i in students)
                 {
-                    Console.WriteLine(" it’s "); convert.UAHtoUSD(money); convert.UAHtoEUR(money);
-                    Console.WriteLine("Your USD: ");
-                    double money1 = Convert.ToDouble(Console.ReadLine());
-                    if (money1 < 0) { Console.WriteLine(" Error "); Console.ReadKey(); }
-                    else
+                    Console.WriteLine($"{i.GetName()} {i.GetState()}");
+                }
+            }
+        }
+
+
+        class Program
+        {
+            static void Help()
+            {
+                Console.WriteLine();
+                Console.WriteLine("NEW_GROUP");
+                Console.WriteLine("INFO");
+                Console.WriteLine("FULL_INFO");
+                Console.WriteLine("EXIT");
+                Console.WriteLine();
+            }
+
+            static void Main(string[] args)
+            {
+                string s = "";
+                List<Group> groups = new List<Group>();
+                Help();
+                while (true)
+                {
+                    s = Console.ReadLine();
+                    if (s == "NEW_GROUP")
                     {
-                        Console.WriteLine(" it’s "); convert.USDtoUAH(money1);
-                        Console.WriteLine("Your EUR: ");
-                        double money2 = Convert.ToDouble(Console.ReadLine());
-                        if (money2 < 0) { Console.WriteLine(" Error "); Console.ReadKey(); }
-                        else
+                        string groupname;
+                        Console.Write("Напишiть назву групи: ");
+                        groupname = Console.ReadLine();
+                        Console.WriteLine();
+                        Group g = new Group(groupname);
+                        groups.Add(g);
+                        Console.WriteLine("STOP: завершити додавання студентiв");
+                        while (true)
                         {
-                            Console.WriteLine(" it’s "); convert.EURtoUAh(money2);
-                            Console.ReadKey();
+                            string name;
+                            string state;
+                            Console.Write("Iмя студента: ");
+                            name = Console.ReadLine();
+                            if (name == "STOP")
+                            {
+                                Help();
+                                break;
+                            }
+
+                            Console.Write("Cтан студента(good/bad): ");
+                            state = Console.ReadLine();
+                            if (state == "STOP")
+                            {
+                                Help();
+                                break;
+                            }
+
+                            while (state != "good" && state != "bad" && state != "stop")
+                            {
+                                Console.WriteLine("ERROR");
+                                Console.WriteLine("Стан студента(good/bad): ");
+                                state = Console.ReadLine();
+                                Console.WriteLine();
+                            }
+                            if (state == "STOP")
+                            {
+                                Help();
+                                break;
+
+                            }
+                            if (state == "good")
+                            {
+                                g.AddStudent(new Good_Student(name));
+
+                            }
+                            else if (state == "bad")
+                            {
+                                g.AddStudent(new Bad_Student(name));
+                            }
                         }
+
+                    }
+                    if (s == "INFO")
+                    {
+                        foreach (Group g in groups)
+                            g.GetInfo();
+                        Console.WriteLine();
+                    }
+
+                    if (s == "FULL_INFO")
+                    {
+                        foreach (Group gr in groups)
+                            gr.GetFullInfo();
+                        Console.WriteLine();
+                    }
+                    if (s == "EXIT")
+                    {
+                        break;
+                    }
+                    if (s != "NEW" && s != "INFO" && s != "FULL_INFO" && s != "EXIT")
+                    {
+                        Console.WriteLine("ERROR");
                     }
                 }
             }
-            else { Console.ReadKey(); }
         }
     }
-}
-
-class Converter
-{
-    private double usd, eur;
-    public Converter(double usd, double eur)
-    {
-        if (usd <= 0 || eur <= 0) { Console.WriteLine("Error"); }
-        else
-        {
-            this.usd = usd;
-            this.eur = eur;
-        }
-    }
-    public void UAHtoUSD(double uah)
-    {
-        double conv = uah / usd;
-        Console.WriteLine("    " + conv + " USD \n");
-    }
-    public void UAHtoEUR(double uah)
-    {
-        double conv = uah / eur;
-        Console.WriteLine(" or " + conv + " EUR \n");
-    }
-    public void USDtoUAH(double nusd)
-    {
-        double conv = nusd * usd;
-        Console.WriteLine("    " + conv + " UAH \n");
-    }
-    public void EURtoUAh(double neur)
-    {
-        double conv = neur * eur;
-        Console.WriteLine("    " + conv + " UAH \n");
-    }
-}
